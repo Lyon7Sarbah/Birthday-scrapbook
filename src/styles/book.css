@@ -1,0 +1,314 @@
+/* Book shell — looks like a bound diary/notebook sitting open */
+.book {
+  position: relative;
+  width: min(92vw, 26rem);
+  aspect-ratio: 3 / 4;
+  max-height: 86dvh;
+  box-sizing: border-box;
+  padding: 10px;
+  background: linear-gradient(155deg, var(--color-cover), var(--color-cover-dark));
+  border-radius: 16px;
+  box-shadow: 0 22px 46px rgba(28, 26, 25, 0.32), 0 4px 10px rgba(28, 26, 25, 0.18);
+}
+
+/* a couple of offset paper edges peeking from behind the cover, suggesting bound pages */
+.book::before,
+.book::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--color-paper);
+  border-radius: 12px;
+  z-index: -1;
+}
+
+.book::before {
+  transform: translate(4px, 5px) rotate(0.6deg);
+  opacity: 0.9;
+}
+
+.book::after {
+  transform: translate(7px, 9px) rotate(1.1deg);
+  opacity: 0.65;
+}
+
+.book__frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 2200px;
+  perspective-origin: 50% 50%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* stitched/ring binding down the spine */
+.book__spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 26px;
+  margin-left: -13px;
+  z-index: 6;
+  display: none;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(28, 26, 25, 0.2),
+    rgba(28, 26, 25, 0.04) 32%,
+    rgba(28, 26, 25, 0.04) 68%,
+    rgba(28, 26, 25, 0.2)
+  );
+}
+
+.book__spine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--color-cover-dark) 2.6px, transparent 2.7px);
+  background-size: 100% 28px;
+  background-position: center 10px;
+  background-repeat: repeat-y;
+  opacity: 0.6;
+}
+
+.book__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: var(--color-paper);
+}
+
+.book__spread {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.book__spread--solo {
+  align-items: center;
+  justify-content: center;
+}
+
+.book__page {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--color-paper);
+  box-shadow: var(--shadow-photo);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-sm);
+}
+
+.book__spread--spread .book__page {
+  width: 50%;
+}
+
+.book__page--left {
+  border-radius: var(--radius-md) 2px 2px var(--radius-md);
+}
+
+.book__page--right {
+  border-radius: 2px var(--radius-md) var(--radius-md) 2px;
+}
+
+.book__page--solo {
+  width: 100%;
+  max-width: 26rem;
+  border-radius: var(--radius-md);
+}
+
+/* the single flipping leaf: a real front/back faced element, only it moves.
+   Declared after .book__page so its position:absolute wins on the shared
+   element (same specificity as .book__page's position:relative). */
+.book__leaf {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: 8;
+  transform-style: preserve-3d;
+  transition: transform var(--duration-flip) var(--ease-soft);
+}
+
+.book__leaf--right {
+  right: 0;
+  width: 50%;
+}
+
+.book__leaf--left {
+  left: 0;
+  width: 50%;
+}
+
+.book__leaf--full {
+  left: 0;
+  width: 100%;
+}
+
+.book__leaf__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.book__leaf__face--back {
+  transform: rotateY(180deg);
+}
+
+/* Closed cover — sits on the outer shell, above the frame and controls,
+   showing the real first spread beneath only once opened */
+.book__cover {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  background: linear-gradient(155deg, var(--color-cover), var(--color-cover-dark));
+  border-radius: 10px;
+  text-align: center;
+  color: var(--color-paper);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform var(--duration-flip) var(--ease-soft), opacity var(--duration-flip) var(--ease-soft);
+}
+
+.cover__flower {
+  color: #f0d9c9;
+}
+
+.cover-eyebrow {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.cover-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+  color: var(--color-paper);
+  line-height: 1.2;
+}
+
+.cover-name {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  color: #f0d9c9;
+  line-height: 1.1;
+}
+
+.btn--on-cover {
+  border-color: var(--color-paper);
+  color: var(--color-paper);
+}
+
+.btn--on-cover:hover {
+  background: var(--color-paper);
+  color: var(--color-cover-dark);
+}
+
+/* Blank facing page for solo content */
+.blank-page__tape {
+  top: -14px;
+}
+
+/* Any absolutely-positioned decorative sticker scattered on a page —
+   position/rotation supplied inline per instance */
+.scatter-sticker {
+  position: absolute;
+  color: var(--color-accent);
+}
+
+/* Controls */
+.book__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.book__nav {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--duration-fast) var(--ease-soft), color var(--duration-fast) var(--ease-soft);
+}
+
+.book__nav:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.book__nav:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Compact type scale for page-sized content */
+.page-eyebrow {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.page-name {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 7vw, 2.6rem);
+  color: var(--color-accent);
+  line-height: 1.1;
+}
+
+.page-text {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  /* open: full two-page spread width. Closed keeps the single-page size
+     (set on .book at the top of this file) so the shut book reads as one
+     cover-width object, not a double-wide spread with a blank overlay. */
+  .book:not(.is-closed) {
+    width: min(90vw, 52rem);
+    aspect-ratio: 8 / 5;
+  }
+
+  .book:not(.is-closed) .book__spine {
+    display: block;
+  }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  .book {
+    max-height: 92dvh;
+  }
+}

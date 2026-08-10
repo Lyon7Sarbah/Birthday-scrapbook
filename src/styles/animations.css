@@ -1,0 +1,76 @@
+.reveal-item {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(14px);
+  transition: opacity var(--duration-slow) var(--ease-soft),
+    transform var(--duration-slow) var(--ease-soft),
+    filter var(--duration-slow) var(--ease-soft);
+}
+
+.reveal-item.is-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+.fade-in {
+  animation: fadeIn var(--duration-base) var(--ease-soft) both;
+}
+
+.fade-out {
+  animation: fadeOut var(--duration-base) var(--ease-soft) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.image-reveal {
+  animation: imageReveal var(--duration-slow) var(--ease-soft) both;
+}
+
+@keyframes imageReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-item {
+    filter: none;
+    transform: none;
+  }
+
+  .book__leaf,
+  .book__cover {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,60 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+}
+
+/* The `hidden` attribute is meant to unambiguously mean "not shown" — but
+   any component rule that sets its own `display` (e.g. `display: flex`)
+   silently wins over the browser's low-specificity default `[hidden] {
+   display: none }`, per normal CSS cascade rules. That's a recurring
+   footgun (it happened here more than once), so make `hidden` win
+   unconditionally instead of trusting every component not to collide. */
+[hidden] {
+  display: none !important;
+}
